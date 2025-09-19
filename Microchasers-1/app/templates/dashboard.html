@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Dashboard for Image #{{ image.id }}</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <img src="{{ url_for('static', filename=image.filepath) }}" class="img-fluid" alt="Processed Image">
+        </div>
+        <div class="col-md-4">
+            <h2>Analysis Results</h2>
+            <p><strong>Total Particles Detected:</strong> {{ total_particles }}</p>
+            <hr>
+            <h4>Shape Distribution</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Shape</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shape, count in shape_counts.items() %}
+                    <tr>
+                        <td>{{ shape }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <h4>Color Analysis</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for color, count in color_counts.items() %}
+                    <tr>
+                        <td style="background-color:{{ color }}">{{ color }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>Size Distribution</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Statistic</th>
+                        <th>Value (pixels)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Min Size</td>
+                        <td>{{ "%.2f"|format(size_stats.min) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Max Size</td>
+                        <td>{{ "%.2f"|format(size_stats.max) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Average Size</td>
+                        <td>{{ "%.2f"|format(size_stats.avg) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>Detections</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>X</th>
+                        <th>Y</th>
+                        <th>Size</th>
+                        <th>Shape</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detection in detections %}
+                    <tr>
+                        <td>{{ detection.id }}</td>
+                        <td>{{ detection.x_coordinate }}</td>
+                        <td>{{ detection.y_coordinate }}</td>
+                        <td>{{ "%.2f"|format(detection.size) }}</td>
+                        <td>{{ detection.shape }}</td>
+                        <td style="background-color:{{ detection.color }}">{{ detection.color }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

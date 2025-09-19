@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            {% if current_user.is_authenticated %}
+                <h1 class="display-5 fw-bold">Welcome, {{ current_user.username }}!</h1>
+                <p class="col-md-8 fs-4">This is the MicroChasers platform. You can manage your water samples, upload images for analysis, and view the results.</p>
+                <a href="{{ url_for('main.create_sample') }}" class="btn btn-primary btn-lg" type="button">Create a New Sample</a>
+            {% else %}
+                <h1 class="display-5 fw-bold">Welcome to MicroChasers!</h1>
+                <p class="col-md-8 fs-4">Analyze water samples for microplastics using our advanced image processing platform.</p>
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-2">Sign In</a>
+                    <a href="{{ url_for('main.demo') }}" class="btn btn-success btn-lg">Try Demo</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2>Your Samples</h2>
+    {% if samples %}
+        <div class="list-group">
+        {% for sample in samples %}
+            <a href="{{ url_for('main.sample', id=sample.id) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ sample.name }}</h5>
+                    <small>{{ sample.timestamp.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <p class="mb-1">Contains {{ sample.images.count() }} image(s) and {{ sample.readings.count() }} sensor reading(s).</p>
+            </a>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>You have no samples yet. <a href="{{ url_for('main.create_sample') }}">Create one now!</a></p>
+    {% endif %}
+{% endblock %}

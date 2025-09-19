@@ -1,0 +1,110 @@
+/* Additional Glassmorphism Styles */
+
+/* Alert styles */
+.alert {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px var(--glass-shadow);
+}
+
+/* Button styles */
+.btn {
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: rgba(var(--bs-primary-rgb), 0.3);
+    color: var(--bs-body-color);
+}
+
+.btn-primary:hover {
+    background: rgba(var(--bs-primary-rgb), 0.5);
+    border-color: var(--bs-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+/* Badge styles */
+.badge {
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 0.5em 1em;
+}
+
+/* Table styles */
+.table {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    border-color: var(--glass-border);
+}
+
+/* Modal styles */
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(calc(var(--blur-amount) * 1.5));
+    -webkit-backdrop-filter: blur(calc(var(--blur-amount) * 1.5));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px var(--glass-shadow);
+}
+
+/* Scroll bar styles */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+/* Card hover effects */
+.detection-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 24px;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
+    transition: transform 0.5s ease;
+    transform: translateX(-100%);
+}
+
+.detection-card:hover::after {
+    transform: translateX(100%);
+}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">My Samples</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('main.create_sample') }}" class="btn btn-sm btn-outline-secondary">Create a New Sample</a>
+        </div>
+    </div>
+
+    {% if samples %}
+        <div class="list-group">
+        {% for sample in samples %}
+            <a href="{{ url_for('main.sample', id=sample.id) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ sample.name }}</h5>
+                    <small>{{ sample.timestamp.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <p class="mb-1">Contains {{ sample.images.count() }} image(s) and {{ sample.readings.count() }} sensor reading(s).</p>
+            </a>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            You have no samples yet. <a href="{{ url_for('main.create_sample') }}" class="alert-link">Create one now!</a>
+        </div>
+    {% endif %}
+{% endblock %}

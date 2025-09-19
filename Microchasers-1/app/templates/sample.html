@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Sample: {{ sample.name }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('api.export_sample_json', id=sample.id) }}" class="btn btn-sm btn-outline-secondary">Export as JSON</a>
+            <a href="{{ url_for('api.export_sample_csv', id=sample.id) }}" class="btn btn-sm btn-outline-secondary ms-2">Export as CSV</a>
+        </div>
+    </div>
+
+    <p>Created on: {{ sample.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} by <strong>{{ sample.author.username }}</strong></p>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Upload a New Image</h3>
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ url_for('main.sample', id=sample.id) }}" method="post" enctype="multipart/form-data" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.image.label(class="form-label") }}
+                            {{ form.image(class="form-control") }}
+                            {% for error in form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3>Sensor Readings</h3>
+            {% if sample.readings.all() %}
+                <ul class="list-group">
+                {% for reading in sample.readings.all() %}
+                    <li class="list-group-item">Temp: {{ reading.temperature }}°C, pH: {{ reading.ph }} at {{ reading.timestamp.strftime('%H:%M') }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No sensor readings for this sample yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Uploaded Images</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% if images_with_stats %}
+            {% for item in images_with_stats %}
+            <div class="col">
+                <div class="detection-card position-relative">
+                    <img src="{{ url_for('static', filename=item.image.filepath) }}" 
+                         class="detection-image" alt="Sample image">
+                    <div class="detection-content">
+                        <h4 class="mb-3">Analysis Results</h4>
+                        <div class="detection-time">
+                            <i class="fas fa-clock"></i>
+                            {{ item.image.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                        
+                        {% if item.image.detections.count() > 0 %}
+                            <div class="detection-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <i class="fas fa-microscope"></i> Detected Particles
+                                    </span>
+                                    <span class="stat-value">{{ item.image.detections.count() }}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <i class="fas fa-ruler"></i> Average Size
+                                    </span>
+                                    <span class="stat-value">{{ "%.2f"|format(item.stats.avg) }} px</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">
+                                        <i class="fas fa-chart-bar"></i> Size Range
+                                    </span>
+                                    <span class="stat-value">{{ item.stats.min }} - {{ item.stats.max }} px</span>
+                                </div>
+                                
+                                <div class="detection-types mt-3">
+                                    {% set shapes = item.image.detections.with_entities(Detection.shape).distinct() %}
+                                    {% for shape in shapes %}
+                                        <span class="badge bg-primary me-2">{{ shape[0] }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <a href="{{ url_for('main.dashboard', image_id=item.image.id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-chart-line"></i> View Detailed Analysis
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> No microplastics detected in this image.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info w-100">
+                <i class="fas fa-info-circle"></i> No images uploaded for this sample yet.
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
